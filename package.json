@@ -1,7 +1,7 @@
 {
   "name": "@base63/blogfe",
   "version": "0.0.0",
-  "description": "The frontend to the base63.com application - blog",
+  "description": "The frontend to the base63.io application - blog",
   "author": "Base63 team",
   "scripts": {
     "build": "tsc",
