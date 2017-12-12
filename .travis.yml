@@ -1,0 +1,53 @@
+language: node_js
+
+node_js:
+- "node"
+
+cache:
+  directories:
+    - node_modules
+p
+services:
+  - postgresql
+
+addons:
+  postgresql: "9.6"
+
+env:
+  global:
+  - ENV=TEST
+  - ADDRESS=0.0.0.0
+  - PORT=10000
+  - ORIGIN=null
+  - LOGGLY_TOKEN=null
+  - LOGGLY_SUBDOMAIN=null
+  - ROLLBAR_TOKEN=null
+  - GEMFURY_USER=base63
+  # GEMFURY_API_KEY=???
+  - secure: "BE12X0YwrUAIqCababGvLS6rzGYpkhjRZwmFRfajBVt4JaBapLsahw+EBO/w0rPO/e/L9PK+pfRLBv8aSN0cJPuPAaXWIoQ1AUPJeMLR6ygVcsOrDLItaajVc3GqEyu65vZu/e02eHULbA5vA4qUoNjkeLJQ06AC5LAJ7CpGuMAur69l/irH4TOjsX1rR0iHN99BPpKXLZYizSVHYbDdGBWPsSUyXjGIJTfduv/9eBTin3CGzyrrXIVYAOH+O+GBic/u1XmnAGMM+pw3lYHAektkiDLPE21Ds/nfwMnaiXS/YnIu0G/l3RoO3qX+P9Hq+H6M3WEgvRLIUzCCbhmpRBeDRPznKjSw7gzR6g0BKZDxkAj+H81Rfo/1wvDkwtetAU3vph8anvTDFgYGl6YqhHkfYC6l9GHjOHXpCTPhApmFnrXNoBcKSKITXe2KCk4l8rOFuhPVk02w1wL31J0DUKdOjfTaeg/crZ4v58EXjk91reVRAVoqXRabyS/kUXJ7pyWZCN7O1OP/Ws8qxo7HBs+On5o38A5yYjQF9xjV9oG6+8KwLlvUWUTAjbgWU68ccoHIKZblpR+NhYIkvzuLmHNcQI0FGbKLst8iGfPd2Y0cJQa7YBouMQmOWsuqdgpUBguB8pRYkYIqIdndBKFM3ChFq55XF+g4aWuVybeQAzk="
+
+install:
+- npm install --registry=https://npm-proxy.fury.io/${GEMFURY_API_KEY}/${GEMFURY_USER}/ --progress=false
+
+before_script:
+- psql -c 'create database base63;' -U postgres
+
+script:
+- npm run test
+
+after_success:
+- npm run push-coverage-to-codecov
+
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: $(npm bin)/togemfury --user ${GEMFURY_USER} --api_key ${GEMFURY_API_KEY}
+  on:
+    tags: true
+# - provider: heroku
+#   skip_cleanup: true
+#   app: blogfe-staging-base63
+#   api_key:
+#     secure: "bkrJktWntQN9CX+C1/u3Hbg81EeJ7siSN6qgYC8l92vCe7KiguxpXa8LyYUmw/rtmCOBrYx51QWzBc2ivaDgrfFepjA4cMDgkTGUwCEJOYwos9Dq1S6AlQPiCsPoI/GtLCPbJf7cntf8iqJiMt4GfqUDEfvagCF5qOiphQtjmCY3wrFcDDB1PgbsBTYq596eEgKr1OcLt8965AL6Krad36WcpMRTTtqVujZdFR3U+VCWCfLd6N6NAWWt8+wUkjMmK2qzv8r1QyUDfmlJbhoh9SrTmP7nIjqhGmo0NTM/j4ANOic+17xhY9I93qTjpmiFO9OZcpa24L/928wMKYB0TH7EppRoODWzOd0PNdYtY3b5BWo2Uxt+HJPH9Mh9GL76A/6mlxNUTzKRo3/uiLloIWQLmEpETjbdMwS2YVpNrsBAEjdS1LO1NkesDXqzyxelODxTNn31tbfGvT/HAPq1/GhDy7gJa3MPdEAMaTMqfOM/Ursejx4sSrJDgsXKG0equJOwTrGY55NGkUUABUDJOM4hMkars/9Q88S+wVWUyV6ruWoKfDy/ljhBSBooT0PLI9nfbsAvV452GTMp/xlkoLcZGtsrHph3TWOQnWT8Q1AEpVVx1fweD8epUCv7wyCJ7uKTq6nJODdZm1mVDkwYIkF4ntpw0uKRONvAB8ePN2M="
+#   on:
+#     tags: true
