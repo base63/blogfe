@@ -32,9 +32,6 @@ ENV ENV LOCAL
 ENV ADDRESS 0.0.0.0
 ENV PORT 10000
 ENV ORIGIN http://localhost:10004
-ENV LOGGLY_TOKEN null
-ENV LOGGLY_SUBDOMAIN null
-ENV ROLLBAR_TOKEN null
 
 RUN chown -R base63:base63 /base63/build
 RUN chown -R base63:base63 /base63/out
