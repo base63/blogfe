@@ -3,12 +3,10 @@ import { NavLink, Route, Switch, withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
+import { HomePage } from './home'
 import { NotFound } from './not-found'
+import { PostPage } from './post'
 import { FooState } from './store'
-
-
-const HomePage = () => <div>Home page</div>;
-const PostPage = () => <div>A post page</div>;
 
 
 export interface Props {

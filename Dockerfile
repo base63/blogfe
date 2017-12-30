@@ -7,7 +7,7 @@ MAINTAINER Base63 team <horia141@gmail.com>
 RUN groupadd base63 && \
     useradd -ms /bin/bash -g base63 base63
 
-# Copy source code.
+# Setup directory structure.
 
 RUN mkdir /base63
 COPY . /base63
